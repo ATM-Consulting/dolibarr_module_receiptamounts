@@ -3,9 +3,9 @@
 ## Features
 
 This module displays the receipt amounts based on linked supplier orders
-
-This module has been developed by <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>You can find the documentation on our <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>For any question or feedback, contact us on <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>For any commercial question, contact us on <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> or at +33 9 77 19 50 70<br><br>Find our other modules on <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 <!--
+This module has been developed by <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>You can find the documentation on our <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>For any question or feedback, contact us on <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>For any commercial question, contact us on <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> or at +33 9 77 19 50 70<br><br>Find our other modules on <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
+
 ![Screenshot receiptamounts](img/screenshot_receiptamounts.png?raw=true "ReceiptAmounts"){imgmd}
 
 Other external modules are available on [Dolistore.com](https://www.dolistore.com).
