@@ -84,13 +84,15 @@ function calculateReceiptTotal(Reception $object)
 		$object->array_options['options_total_ht'] = 0;
 		foreach ($object->lines as $line)
 		{
-			$addTotal = 0;
-			$supplierorderline = new CommandeFournisseurLigne($object->db);
-			$ret = $supplierorderline->fetch($line->fk_commandefourndet);
+			if (empty($line->array_options)) $line->fetch_optionals();
 
-			if ($ret > 0)
+			$addTotal = 0;
+			$orderline_total_ht = floatval($line->array_options['options_orderline_total_ht']);
+			$orderline_qty = floatval($line->array_options['options_orderline_qty']);
+
+			if (!empty($line->array_options['options_orderline_total_ht']) && !empty($line->array_options['options_orderline_qty']))
 			{
-				$addTotal = $supplierorderline->total_ht * $line->qty / (!empty($supplierorderline->qty) ? $supplierorderline->qty : 1);
+				$addTotal = $orderline_total_ht * $line->qty / $orderline_qty;
 			}
 			$object->array_options['options_total_ht']+= $addTotal;
 		}

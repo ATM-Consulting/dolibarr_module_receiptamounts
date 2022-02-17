@@ -327,6 +327,27 @@ class InterfaceReceiptAmountsTriggers extends DolibarrTriggers
 	// trigger RECEPTION_CREATE
 	public function receptionCreate($action, $object, User $user, Translate $langs, Conf $conf)
 	{
+		require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
+
+		// garnissage des extrafields des lignes de réceptions qui me serviront de base de calcul
+		// ceci est pour pallier le fait que les commandes fournisseurs restent modifiables quelque soit leurs statuts de réception en V14.0
+		if (!empty($object->lines))
+		{
+			foreach ($object->lines as $line)
+			{
+				if (empty($line->array_options)) $line->fetch_optionals();
+
+				$supplierorderline = new CommandeFournisseurLigne($object->db);
+				$ret = $supplierorderline->fetch($line->fk_commandefourndet);
+
+				if ($ret > 0)
+				{
+					$line->array_options['options_orderline_total_ht'] = $supplierorderline->total_ht;
+					$line->array_options['options_orderline_qty'] = $supplierorderline->qty;
+					$line->insertExtraFields();
+				}
+			}
+		}
 		calculateReceiptTotal($object);
 
 		return 0;
