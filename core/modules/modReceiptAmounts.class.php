@@ -420,9 +420,9 @@ class modReceiptAmounts extends DolibarrModules
 		}
 
 		// Create extrafields during init
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-		//$extrafields = new ExtraFields($this->db);
-		//$result1=$extrafields->addExtraField('receiptamounts_myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
+		include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		$extrafields = new ExtraFields($this->db);
+		$result1=$extrafields->addExtraField('total_ht', "TotalHT", 'price', 1,  '24,8', 'reception', 0, 0, '', '', 0, '$user->rights->receiptamounts->read', '($user->rights->receiptamounts->read ? 5 : 0)', '', '', 0, 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
 		//$result2=$extrafields->addExtraField('receiptamounts_myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
 		//$result3=$extrafields->addExtraField('receiptamounts_myattr3', "New Attr 3 label", 'varchar', 1, 10, 'bank_account', 0, 0, '', '', 1, '', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
 		//$result4=$extrafields->addExtraField('receiptamounts_myattr4', "New Attr 4 label", 'select',  1,  3, 'thirdparty',   0, 1, '', array('options'=>array('code1'=>'Val1','code2'=>'Val2','code3'=>'Val3')), 1,'', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
