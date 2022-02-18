@@ -80,10 +80,10 @@ function calculateReceiptTotal(Reception $object)
 
 	if (empty($object->array_options)) $object->fetch_optionals();
 
-        $object->array_options['options_total_ht'] = 0;
+    $object->array_options['options_total_ht'] = 0;
 	if (!empty($object->lines))
 	{
-		
+
 		foreach ($object->lines as $line)
 		{
 			if (empty($line->array_options)) $line->fetch_optionals();
