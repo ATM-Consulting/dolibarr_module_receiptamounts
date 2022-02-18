@@ -80,9 +80,10 @@ function calculateReceiptTotal(Reception $object)
 
 	if (empty($object->array_options)) $object->fetch_optionals();
 
+        $object->array_options['options_total_ht'] = 0;
 	if (!empty($object->lines))
 	{
-		$object->array_options['options_total_ht'] = 0;
+		
 		foreach ($object->lines as $line)
 		{
 			if (empty($line->array_options)) $line->fetch_optionals();
@@ -91,7 +92,7 @@ function calculateReceiptTotal(Reception $object)
 			$orderline_total_ht = floatval($line->array_options['options_orderline_total_ht']);
 			$orderline_qty = floatval($line->array_options['options_orderline_qty']);
 
-			if (!empty($line->array_options['options_orderline_total_ht']) && !empty($line->array_options['options_orderline_qty']))
+			if (!empty($orderline_total_ht) && !empty($orderline_qty))
 			{
 				$addTotal = $orderline_total_ht * $line->qty / $orderline_qty;
 			}
