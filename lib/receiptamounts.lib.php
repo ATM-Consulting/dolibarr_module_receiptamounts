@@ -66,3 +66,38 @@ function receiptamountsAdminPrepareHead()
 
 	return $head;
 }
+
+/**
+ * calculate total amount of a receipt and update reception extrafield
+ * @param Reception $object
+ *
+ * @return void
+ */
+function calculateReceiptTotal(Reception $object)
+{
+	require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
+
+	if (empty($object->array_options)) $object->fetch_optionals();
+
+        $object->array_options['options_total_ht'] = 0;
+	if (!empty($object->lines))
+	{
+		
+		foreach ($object->lines as $line)
+		{
+			if (empty($line->array_options)) $line->fetch_optionals();
+
+			$addTotal = 0;
+			$orderline_total_ht = floatval($line->array_options['options_orderline_total_ht']);
+			$orderline_qty = floatval($line->array_options['options_orderline_qty']);
+
+			if (!empty($orderline_total_ht) && !empty($orderline_qty))
+			{
+				$addTotal = $orderline_total_ht * $line->qty / $orderline_qty;
+			}
+			$object->array_options['options_total_ht']+= $addTotal;
+		}
+	}
+	$object->insertExtraFields();
+
+}
