@@ -68,7 +68,8 @@ function receiptamountsAdminPrepareHead()
 }
 
 /**
- * calculate total amount of a receipt and update reception extrafield
+ * calculate total amount of a receipt based on lines extrafields and update reception extrafield
+ *
  * @param Reception $object
  *
  * @return void

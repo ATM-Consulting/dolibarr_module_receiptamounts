@@ -325,6 +325,18 @@ class InterfaceReceiptAmountsTriggers extends DolibarrTriggers
 	}
 
 	// trigger RECEPTION_CREATE
+	/**
+	 * initialize line extrafields with origin orderlines qty and total_ht
+	 * then calculate total_ht for the created receipt
+	 *
+	 * @param $action
+	 * @param $object
+	 * @param User $user
+	 * @param Translate $langs
+	 * @param Conf $conf
+	 *
+	 * @return int
+	 */
 	public function receptionCreate($action, $object, User $user, Translate $langs, Conf $conf)
 	{
 		require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
@@ -354,6 +366,18 @@ class InterfaceReceiptAmountsTriggers extends DolibarrTriggers
 	}
 
 	// trigger LINERECEPTION_UPDATE
+	/**
+	 * Calculate new total_ht for the receipt when modifying its lines
+	 * In V14.0 receiptLines are CommandeFournisseurDispatch combined with origine CommandeFournisseurLigne values
+	 *
+	 * @param $action
+	 * @param $object
+	 * @param User $user
+	 * @param Translate $langs
+	 * @param Conf $conf
+	 *
+	 * @return int
+	 */
 	public function linereceptionUpdate($action, $object, User $user, Translate $langs, Conf $conf)
 	{
 
@@ -372,6 +396,18 @@ class InterfaceReceiptAmountsTriggers extends DolibarrTriggers
 	}
 
 	// trigger LINERECEPTION_DELETE
+	/**
+	 * Calculate new total_ht for the receipt when deleting one receiptline
+	 * In V14.0 receiptLines are CommandeFournisseurDispatch combined with origine CommandeFournisseurLigne values
+	 *
+	 * @param $action
+	 * @param $object
+	 * @param User $user
+	 * @param Translate $langs
+	 * @param Conf $conf
+	 *
+	 * @return int
+	 */
 	public function linereceptionDelete($action, $object, User $user, Translate $langs, Conf $conf)
 	{
 		// re-fetch the line cause delete action is called on an empty line with $line->id populated
