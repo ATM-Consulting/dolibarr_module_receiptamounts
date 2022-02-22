@@ -514,7 +514,7 @@ class ActionsReceiptAmounts
 		$TContext = explode(':',$parameters['context']);
 		if (in_array('receptionlist', $TContext))
 		{
-			$this->resprints = ", elcf.fk_source as cf_rowid, cf.ref";
+			$this->resprints = ", elcf.fk_source as cf_rowid, cf.ref as refcf";
 		}
 
 		return 0;
@@ -579,20 +579,28 @@ class ActionsReceiptAmounts
 					});
 
 					$(".checkforselect").change(function(){
+						getTotal();
+					});
+
+					function getTotal() {
 						let totalht = 0;
 
-						$(".checkforselect:checked").each(function(){
+						$(".checkforselect:checked").each(function () {
 							let lineTotal = $(this).parents('tr').children('td[data-key=total_ht]')[0].innerText;
 
-							totalht+=parseFloat(lineTotal.replace(' ', '').replace(',','.'));
-							console.log(parseFloat(lineTotal.replace(' ', '').replace(',','.')));
+							totalht += parseFloat(lineTotal.replace(' ', '').replace(',', '.'));
+							// console.log(parseFloat(lineTotal.replace(' ', '').replace(',', '.')));
 						});
 
-						console.log(totalht);
-						$('#receipt_total_ht_value').html(new Intl.NumberFormat('<?php echo $defaultLang; ?>', { style: 'currency', currency: '<?php echo $currency; ?>' }).format(totalht));
+						// console.log(totalht);
+						$('#receipt_total_ht_value').html(new Intl.NumberFormat('<?php echo $defaultLang; ?>', {
+							style: 'currency',
+							currency: '<?php echo $currency; ?>'
+						}).format(totalht));
 						//parseFloat(('3 000,10').replace(' ', '').replace(',','.'))
+					}
 
-					});
+					getTotal();
 
 				});
 			</script>
