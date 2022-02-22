@@ -54,6 +54,11 @@ MyWidget = My widget
 MyWidgetDescription = My widget description
 
 #
+# List
+#
+totalSelectedReceipt = Total for selected receipts :
+
+#
 # Rights
 #
 ReceiptAmountsRead = View Receipt Amounts

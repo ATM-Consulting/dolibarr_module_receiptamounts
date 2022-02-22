@@ -54,6 +54,11 @@ MyWidget = My widget
 MyWidgetDescription = My widget description
 
 #
+# List
+#
+totalSelectedReceipt = Total des réceptions sélectionnées :
+
+#
 # Rights
 #
 ReceiptAmountsRead = Voir les montants de réception
