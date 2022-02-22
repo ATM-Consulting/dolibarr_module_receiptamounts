@@ -106,6 +106,11 @@ class ActionsReceiptAmounts
 			$arrayfields['elcf.fk_source'] = array('label'=>$langs->trans("SupplierOrder"), 'checked'=>1, 'position'=>10);
 
 			$arrayfields = dol_sort_array($arrayfields, 'position');
+
+			if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha'))
+			{
+				$_POST['search_commande'] = 0;
+			}
 		}
 
 		if (!$error) {
@@ -126,8 +131,24 @@ class ActionsReceiptAmounts
 
 		if (in_array('receptionlist', $TContext))
 		{
+			global $form;
+
+			$search_commande = GETPOST('search_commande', 'int');
+
 			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
-				$this->resprints = '<td class="liste_titre">&nbsp;</td>';
+				$sql = "SELECT DISTINCT cf.rowid, cf.ref FROM ".MAIN_DB_PREFIX."commande_fournisseur cf";
+				$resql = $this->db->query($sql);
+				$this->resprints = '<td class="liste_titre center">';
+				if ($resql)
+				{
+					$TCf = array();
+					while ($obj = $this->db->fetch_object($resql))
+					{
+						$TCf[$obj->rowid] = $obj->ref;
+					}
+					$this->resprints.= $form->selectarray('search_commande', $TCf, $search_commande, 1);
+				}
+				$this->resprints.= '</td>';
 			}
 		}
 
@@ -143,8 +164,24 @@ class ActionsReceiptAmounts
 		if (in_array('receptionlist', $TContext))
 		{
 			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
-				$this->resprints = getTitleFieldOfList($arrayfields['elcf.fk_source']['label'], 0, $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, "", $sortfield, $sortorder, 'center nowrap ');
+				$this->resprints = getTitleFieldOfList($arrayfields['elcf.fk_source']['label'], 0, $_SERVER["PHP_SELF"], "cf.ref", "", $param, "", $sortfield, $sortorder, 'center nowrap ');
 			}
+		}
+
+		return 0;
+	}
+
+	public function printFieldListWhere($parameters, &$object, &$action, $hookmanager)
+	{
+		foreach ($parameters as $key => $value) $$key = $value;
+
+		$TContext = explode(':',$parameters['context']);
+
+		if (in_array('receptionlist', $TContext))
+		{
+			$search_commande = GETPOST('search_commande', 'int');
+
+			if ($search_commande > 0) $this->resprints = ' AND elcf.fk_source = '.$search_commande;
 		}
 
 		return 0;
@@ -172,10 +209,6 @@ class ActionsReceiptAmounts
 				if (!$i) {
 					$parameters['totalarray']['nbfield']++;
 				}
-			}
-			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
-//				$this->resprints = print_liste_field_titre($arrayfields['elcf.fk_source']['label'], $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
-//				$this->resprints = getTitleFieldOfList($arrayfields['elcf.fk_source']['label'], 0, $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, "", $sortfield, $sortorder, 'center nowrap ');
 			}
 		}
 
@@ -232,9 +265,18 @@ class ActionsReceiptAmounts
 		$error = 0; // Error counter
 		$disabled = 1;
 
-		/* print_r($parameters); print_r($object); echo "action: " . $action; */
-		if (in_array($parameters['currentcontext'], array('somecontext1', 'somecontext2'))) {		// do something only for the context 'somecontext1' or 'somecontext2'
-			$this->resprints = '<option value="0"'.($disabled ? ' disabled="disabled"' : '').'>'.$langs->trans("ReceiptAmountsMassAction").'</option>';
+		$TContext = explode(':',$parameters['context']);
+
+		if (in_array('receptionlist', $TContext)) // je hack les params ici parce que j'ai pas d'autre choix dans la list de réceptions
+		{
+			$search_commande = GETPOST('search_commande', 'int');
+
+			if ($search_commande > 0)
+			{
+				global $param;
+				$param .= "&search_commande=".urlencode($search_commande);
+			}
+
 		}
 
 		if (!$error) {
@@ -436,7 +478,7 @@ class ActionsReceiptAmounts
 		$TContext = explode(':',$parameters['context']);
 		if (in_array('receptionlist', $TContext))
 		{
-			$this->resprints = ", elcf.fk_source as cf_rowid";
+			$this->resprints = ", elcf.fk_source as cf_rowid, cf.ref";
 		}
 
 		return 0;
@@ -457,6 +499,7 @@ class ActionsReceiptAmounts
 		if (in_array('receptionlist', $TContext))
 		{
 			$this->resprints = " LEFT JOIN ".MAIN_DB_PREFIX."element_element as elcf ON elcf.fk_target = e.rowid AND elcf.targettype = 'reception'";
+			$this->resprints.= " LEFT JOIN ".MAIN_DB_PREFIX."commande_fournisseur as cf ON elcf.fk_source = cf.rowid AND elcf.sourcetype = 'order_supplier'";
 		}
 
 		return 0;
