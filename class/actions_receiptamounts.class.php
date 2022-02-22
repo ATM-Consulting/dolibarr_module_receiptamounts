@@ -123,6 +123,15 @@ class ActionsReceiptAmounts
 		}
 	}
 
+	/**
+	 * Execute action printFieldListOption
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
 	public function printFieldListOption($parameters, &$object, &$action, $hookmanager)
 	{
 		$arrayfields = $parameters['arrayfields'];
@@ -155,6 +164,15 @@ class ActionsReceiptAmounts
 		return 0;
 	}
 
+	/**
+	 * Execute action printFieldListTitle
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
 	public function printFieldListTitle($parameters, &$object, &$action, $hookmanager)
 	{
 		foreach ($parameters as $key => $value) $$key = $value;
@@ -171,6 +189,15 @@ class ActionsReceiptAmounts
 		return 0;
 	}
 
+	/**
+	 * Execute action printFieldListWhere
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
 	public function printFieldListWhere($parameters, &$object, &$action, $hookmanager)
 	{
 		foreach ($parameters as $key => $value) $$key = $value;
@@ -187,6 +214,15 @@ class ActionsReceiptAmounts
 		return 0;
 	}
 
+	/**
+	 * Execute action printFieldListValue
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
 	public function printFieldListValue($parameters, &$object, &$action, $hookmanager)
 	{
 		foreach ($parameters as $key => $value) $$key = $value;
