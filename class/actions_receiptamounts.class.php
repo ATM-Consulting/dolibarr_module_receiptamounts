@@ -98,11 +98,15 @@ class ActionsReceiptAmounts
 
 		$error = 0; // Error counter
 
-		/* print_r($parameters); print_r($object); echo "action: " . $action; */
-//		if (in_array($parameters['currentcontext'], array('somecontext1', 'somecontext2'))) {	    // do something only for the context 'somecontext1' or 'somecontext2'
-//			// Do what you want here...
-//			// You can for example call global vars like $fieldstosearchall to overwrite them, or update database depending on $action and $_POST values.
-//		}
+		$TContext = explode(':',$parameters['context']);
+		if (in_array('receptionlist', $TContext))
+		{
+			global $arrayfields;
+
+			$arrayfields['elcf.fk_source'] = array('label'=>$langs->trans("SupplierOrder"), 'checked'=>1, 'position'=>10);
+
+			$arrayfields = dol_sort_array($arrayfields, 'position');
+		}
 
 		if (!$error) {
 //			$this->results = array('myreturn' => 999);
@@ -112,6 +116,70 @@ class ActionsReceiptAmounts
 //			$this->errors[] = 'Error message';
 			return -1;
 		}
+	}
+
+	public function printFieldListOption($parameters, &$object, &$action, $hookmanager)
+	{
+		$arrayfields = $parameters['arrayfields'];
+
+		$TContext = explode(':',$parameters['context']);
+
+		if (in_array('receptionlist', $TContext))
+		{
+			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
+				$this->resprints = '<td class="liste_titre">&nbsp;</td>';
+			}
+		}
+
+		return 0;
+	}
+
+	public function printFieldListTitle($parameters, &$object, &$action, $hookmanager)
+	{
+		foreach ($parameters as $key => $value) $$key = $value;
+
+		$TContext = explode(':',$parameters['context']);
+
+		if (in_array('receptionlist', $TContext))
+		{
+			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
+				$this->resprints = getTitleFieldOfList($arrayfields['elcf.fk_source']['label'], 0, $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, "", $sortfield, $sortorder, 'center nowrap ');
+			}
+		}
+
+		return 0;
+	}
+
+	public function printFieldListValue($parameters, &$object, &$action, $hookmanager)
+	{
+		foreach ($parameters as $key => $value) $$key = $value;
+
+		$TContext = explode(':',$parameters['context']);
+
+		if (in_array('receptionlist', $TContext))
+		{
+			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
+				require_once DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php";
+				$this->resprints = '<td class="center nowrap">';
+
+				$cf = new CommandeFournisseur($this->db);
+				$res = $cf->fetch($obj->cf_rowid);
+				if ($res > 0)
+				{
+					$this->resprints.= $cf->getNomUrl();
+				}
+				$this->resprints.= '</td>';
+				if (!$i) {
+					$parameters['totalarray']['nbfield']++;
+				}
+			}
+			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
+//				$this->resprints = print_liste_field_titre($arrayfields['elcf.fk_source']['label'], $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, '', $sortfield, $sortorder, 'center nowrap ');
+//				$this->resprints = getTitleFieldOfList($arrayfields['elcf.fk_source']['label'], 0, $_SERVER["PHP_SELF"], "elcf.fk_source", "", $param, "", $sortfield, $sortorder, 'center nowrap ');
+			}
+		}
+
+		return 0;
 	}
 
 
@@ -352,6 +420,46 @@ class ActionsReceiptAmounts
 //				return 0;
 //			}
 //		}
+	}
+
+	/**
+	 * Execute action printFieldListSelect
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
+	public function printFieldListSelect(&$parameters, &$object, &$action, $hookmanager)
+	{
+		$TContext = explode(':',$parameters['context']);
+		if (in_array('receptionlist', $TContext))
+		{
+			$this->resprints = ", elcf.fk_source as cf_rowid";
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Execute action printFieldListFrom
+	 *
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return int
+	 */
+	public function printFieldListFrom(&$parameters, &$object, &$action, $hookmanager)
+	{
+		$TContext = explode(':',$parameters['context']);
+		if (in_array('receptionlist', $TContext))
+		{
+			$this->resprints = " LEFT JOIN ".MAIN_DB_PREFIX."element_element as elcf ON elcf.fk_target = e.rowid AND elcf.targettype = 'reception'";
+		}
+
+		return 0;
 	}
 
 	/**
