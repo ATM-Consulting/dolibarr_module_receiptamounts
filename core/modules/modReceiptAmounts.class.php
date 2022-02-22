@@ -83,7 +83,7 @@ class modReceiptAmounts extends DolibarrModules
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		// To use a supported fa-xxx css style of font awesome, use this->picto='xxx'
-		$this->picto = 'generic';
+		$this->picto = 'receiptamounts@receiptamounts';
 
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
@@ -428,6 +428,8 @@ class modReceiptAmounts extends DolibarrModules
 		//$result4=$extrafields->addExtraField('receiptamounts_myattr4', "New Attr 4 label", 'select',  1,  3, 'thirdparty',   0, 1, '', array('options'=>array('code1'=>'Val1','code2'=>'Val2','code3'=>'Val3')), 1,'', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
 		//$result5=$extrafields->addExtraField('receiptamounts_myattr5', "New Attr 5 label", 'text',    1, 10, 'user',         0, 0, '', '', 1, '', 0, 0, '', '', 'receiptamounts@receiptamounts', '$conf->receiptamounts->enabled');
 
+		$this->initExtrafieldsValues();
+
 		// Permissions
 		$this->remove($options);
 
@@ -483,4 +485,55 @@ class modReceiptAmounts extends DolibarrModules
 		$sql = array();
 		return $this->_remove($sql, $options);
 	}
+
+	/**
+	 * initialize receipt and receiptLines extrafields values
+	 *
+	 * @return int
+	 */
+	public function initExtrafieldsValues()
+	{
+		dol_include_once('receiptamounts/lib/receiptamounts.lib.php');
+
+		$sql = "SELECT r.rowid FROM ".MAIN_DB_PREFIX."reception r";
+		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."reception_extrafields re on re.fk_object = r.rowid";
+		$sql.= " WHERE re.total_ht is null";
+		$sql.= " OR re.total_ht = 0";
+
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
+
+			while ($obj = $this->db->fetch_object($resql))
+			{
+				$receipt = new Reception($this->db);
+				$resfetch = $receipt->fetch($obj->rowid);
+
+				if ($resfetch > 0 && !empty($receipt->lines))
+				{
+					foreach ($receipt->lines as $line)
+					{
+						if (empty($line->array_options)) $line->fetch_optionals();
+
+						$supplierorderline = new CommandeFournisseurLigne($this->db);
+						$ret = $supplierorderline->fetch($line->fk_commandefourndet);
+
+						if ($ret > 0)
+						{
+							$line->array_options['options_orderline_total_ht'] = $supplierorderline->total_ht;
+							$line->array_options['options_orderline_qty'] = $supplierorderline->qty;
+							$line->insertExtraFields();
+						}
+					}
+				}
+				calculateReceiptTotal($receipt);
+			}
+		}
+
+		return $this->db->num_rows($resql);
+
+	}
+
 }
