@@ -534,7 +534,7 @@ class ActionsReceiptAmounts
 		$TContext = explode(':',$parameters['context']);
 		if (in_array('receptionlist', $TContext))
 		{
-			$this->resprints = " LEFT JOIN ".MAIN_DB_PREFIX."element_element as elcf ON elcf.fk_target = e.rowid AND elcf.targettype = 'reception'";
+			$this->resprints = " LEFT JOIN ".MAIN_DB_PREFIX."element_element as elcf ON elcf.fk_target = e.rowid AND elcf.targettype = 'reception' and elcf.sourcetype = 'order_supplier'";
 			$this->resprints.= " LEFT JOIN ".MAIN_DB_PREFIX."commande_fournisseur as cf ON elcf.fk_source = cf.rowid AND elcf.sourcetype = 'order_supplier'";
 		}
 
