@@ -146,6 +146,8 @@ class ActionsReceiptAmounts
 
 			if (!empty($arrayfields['elcf.fk_source']['checked'])) {
 				$sql = "SELECT DISTINCT cf.rowid, cf.ref FROM ".MAIN_DB_PREFIX."commande_fournisseur cf";
+				$sql.= " WHERE cf.entity in (".getEntity('supplier_order').")";
+
 				$resql = $this->db->query($sql);
 				$this->resprints = '<td class="liste_titre center">';
 				if ($resql)
